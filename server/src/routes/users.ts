@@ -2,23 +2,39 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { db } from "../db";
-import { user } from "../db/schema";
+import { user } from "../db/schema"; // 👈 table ชื่อ user
 import { eq } from "drizzle-orm";
+import { requireAuth } from "../middleware/auth.middleware";
+
+// type ข้อมูลที่เก็บใน c.set("user") / c.set("session")
 type Variables = {
-  user: NonNullable<Awaited<ReturnType<typeof import("../../config/better-auth.config").auth.api.getSession>>["user"]>;
-  session: NonNullable<Awaited<ReturnType<typeof import("../../config/better-auth.config").auth.api.getSession>>["session"]>;
+  user: NonNullable<
+    Awaited<
+      ReturnType<
+        typeof import("../../config/better-auth.config").auth.api.getSession
+      >
+    >["user"]
+  >;
+  session: NonNullable<
+    Awaited<
+      ReturnType<
+        typeof import("../../config/better-auth.config").auth.api.getSession
+      >
+    >["session"]
+  >;
 };
 
 const userRoutes = new Hono<{ Variables: Variables }>()
-  // Get current user profile
-  .get("/me", async (c) => {
-    const user = c.get("user");
-    return c.json({ user });
+  // GET /api/users/me
+  .get("/me", requireAuth, async (c) => {
+    const currentUser = c.get("user"); // 👈 จาก Better Auth
+    return c.json({ user: currentUser });
   })
-  
-  // Update profile
+
+  // PATCH /api/users/me
   .patch(
     "/me",
+    requireAuth,
     zValidator(
       "json",
       z.object({
@@ -27,43 +43,43 @@ const userRoutes = new Hono<{ Variables: Variables }>()
       })
     ),
     async (c) => {
-      const user = c.get("user");
+      const currentUser = c.get("user");
       const body = c.req.valid("json");
-      
+
       const updated = await db
-        .update(user)
+        .update(user) // 👈 ใช้ table user
         .set({
           ...body,
           updatedAt: new Date(),
         })
-        .where(eq(user.id, user.id))
+        .where(eq(user.id, currentUser.id)) // 👈 where ตาม id คนที่ล็อกอิน
         .returning();
-      
+
       return c.json({ user: updated[0] });
     }
   )
-  
-  // Get user by ID
-  .get("/:id", async (c) => {
+
+  // GET /api/users/:id
+  .get("/:id", requireAuth, async (c) => {
     const id = c.req.param("id");
-    
-    const user = await db.query.user.findFirst({
+
+    const found = await db.query.user.findFirst({
       where: eq(user.id, id),
     });
-    
-    if (!user) {
+
+    if (!found) {
       return c.json({ error: "User not found" }, 404);
     }
-    
-    return c.json({ user });
+
+    return c.json({ user: found });
   })
-  
-  // Delete account
-  .delete("/me", async (c) => {
-    const user = c.get("user");
-    
-    await db.delete(user).where(eq(user.id, user.id));
-    
+
+  // DELETE /api/users/me
+  .delete("/me", requireAuth, async (c) => {
+    const currentUser = c.get("user");
+
+    await db.delete(user).where(eq(user.id, currentUser.id));
+
     return c.json({ message: "Account deleted" });
   });
 

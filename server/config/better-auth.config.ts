@@ -14,16 +14,26 @@ export const auth = betterAuth({
       verification: schema.verification,
     },
   }),
-  
+
   // Email/Password
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,
   },
+  user: {
+    additionalFields: {
+      roleId: {
+        type: "string",
+        required: false, // ค่า default
+        input: false,    // ห้ามส่งจาก client
+      }
+    }
+  },
+
 
   basePath: "/api/auth",
   baseURL: process.env.AUTH_URL || "http://localhost:3000",
-  
+
   // Social providers
   socialProviders: {
     google: {
@@ -35,20 +45,21 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     },
   },
-  
+
   // Session
   session: {
+    enabled: true,
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // 1 day
   },
-  
+
   // Advanced options
   advanced: {
     cookiePrefix: "my-app",
     crossSubdomainCookies: {
       enabled: true,
-      domain: process.env.NODE_ENV === "production" 
-        ? ".yourdomain.com" 
+      domain: process.env.NODE_ENV === "production"
+        ? ".yourdomain.com"
         : undefined,
     },
   },
