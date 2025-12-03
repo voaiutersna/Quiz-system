@@ -7,8 +7,7 @@ import { secureHeaders } from "hono/secure-headers";
 // Routes
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/users";
-
-// Error handler
+import examRoutes from "./routes/exam"
 
 const app = new Hono();
 
@@ -53,7 +52,7 @@ app.get("/health", (c) => {
 // Mount routes
 app.route("/", authRoutes);
 app.route("/api/users", userRoutes);
-
+app.route("/api/exam", examRoutes)
 
 // ==================== Start Server ====================
 

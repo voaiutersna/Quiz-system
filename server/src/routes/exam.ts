@@ -9,7 +9,7 @@ import { db } from "../db";
 const examRoutes = new Hono();
 
 const submitSchema = z.object({
-  materialId: z.string().uuid(),
+  materialId: z.string().uuid(),  //z.string().uuid()
   // { [itemId]: answerValue }
   answers: z.record(z.string(), z.string()),
 });
@@ -19,7 +19,7 @@ examRoutes.post(
   zValidator("json", submitSchema),
   async (c) => {
     const { materialId, answers } = c.req.valid("json");
-
+    console.log("GET IN FUNCTION QUIZ")
     const result = await gradeQuizSubmission(db, materialId, answers);
 
     return c.json(result);
