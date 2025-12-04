@@ -8,7 +8,7 @@ import { secureHeaders } from "hono/secure-headers";
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/users";
 import examRoutes from "./routes/exam"
-
+import quizAdminRouter from "./routes//quiz-admin"
 const app = new Hono();
 
 // ==================== Global Middleware ====================
@@ -53,6 +53,7 @@ app.get("/health", (c) => {
 app.route("/", authRoutes);
 app.route("/api/users", userRoutes);
 app.route("/api/exam", examRoutes)
+app.route("/api/admin/quiz", quizAdminRouter)
 
 // ==================== Start Server ====================
 
