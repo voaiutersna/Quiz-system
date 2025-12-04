@@ -9,6 +9,7 @@ import { createMaterial } from "../services/quiz-material"
 import { createSection } from "../services/quiz-section"
 import { getMaterial } from "../services/quiz-get-material"
 import { getMaterialDetail } from "../services/quiz-get-section"
+import { getSectionDetail } from "../services/quiz-get-section-detail";
 //router
 const quizAdminRouter = new Hono();
 
@@ -36,10 +37,18 @@ quizAdminRouter.get("/get-material",
     }
 )
 
-quizAdminRouter.get("/get-section/:id",
+quizAdminRouter.get("/get-material/detail/:id",
     async(c)=>{
         const materialid = c.req.param("id")
         const res = await getMaterialDetail(materialid)
+        return c.json({message:"Successfully get data",res})
+    }
+)
+
+quizAdminRouter.get("/get-section/detail/:id",
+    async(c)=>{
+        const sectionId = c.req.param("id")
+        const res = await getSectionDetail(sectionId)
         return c.json({message:"Successfully get data",res})
     }
 )
