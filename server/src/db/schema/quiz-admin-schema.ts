@@ -13,12 +13,12 @@ export const createSectionSchema = z.object({
 });
 
 export const createItemSchema = z.object({
-  sectionId: z.string().uuid(),
+  sectionId: z.string(),
   content: z.string().min(1),
 });
 
 export const createChoicesSchema = z.object({
-  itemId: z.string().uuid(),
+  itemId: z.string(),
   choices: z.array(
     z.object({
       content: z.string().min(1),

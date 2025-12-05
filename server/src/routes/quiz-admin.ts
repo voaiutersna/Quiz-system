@@ -2,14 +2,18 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 
 //import zod validator (type checker)
-import { createMaterialSchema ,createSectionSchema } from "../db/schema/quiz-admin-schema"
+import { createMaterialSchema ,createSectionSchema, createItemSchema ,createChoicesSchema } from "../db/schema/quiz-admin-schema"
 
 //import service
 import { createMaterial } from "../services/quiz-material"
 import { createSection } from "../services/quiz-section"
+import { createItem } from "../services/quiz-item"
+import { createChoices } from "../services/quiz-choice"
 import { getMaterial } from "../services/quiz-get-material"
 import { getMaterialDetail } from "../services/quiz-get-section"
 import { getSectionDetail } from "../services/quiz-get-section-detail";
+
+
 //router
 const quizAdminRouter = new Hono();
 
@@ -27,6 +31,22 @@ quizAdminRouter.post("/section", zValidator("json", createSectionSchema),
         const body = c.req.valid("json")
         const section = await createSection(body)
         return c.json({message: true,section})
+    }
+)
+
+quizAdminRouter.post("/item", zValidator("json", createItemSchema),
+    async(c)=>{
+        const body = c.req.valid("json")
+        const Item = await createItem(body)
+        return c.json({message: true, Item})
+    }
+)
+
+quizAdminRouter.post("/choices", zValidator("json", createChoicesSchema),
+    async(c)=>{
+        const body = c.req.valid("json")
+        const choices = await createChoices(body)
+        return c.json({message: true, choices})
     }
 )
 
@@ -52,6 +72,7 @@ quizAdminRouter.get("/get-section/detail/:id",
         return c.json({message:"Successfully get data",res})
     }
 )
+
 
 
 export default quizAdminRouter;

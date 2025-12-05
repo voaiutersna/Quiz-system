@@ -9,7 +9,7 @@ import { db } from "../db";
 const examRoutes = new Hono();
 
 const submitSchema = z.object({
-  materialId: z.string().uuid(),  //z.string().uuid()
+  materialId: z.string(),  //z.string().uuid()
   // { [itemId]: answerValue }
   answers: z.record(z.string(), z.string()),
 });
