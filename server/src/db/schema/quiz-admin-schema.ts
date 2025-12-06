@@ -19,13 +19,8 @@ export const createItemSchema = z.object({
 
 export const createChoicesSchema = z.object({
   itemId: z.string(),
-  choices: z.array(
-    z.object({
-      content: z.string().min(1),
-      type: z.enum(["choice", "short-answer"]),
-      isCorrect: z.boolean(),
-    })
-  ).min(1),
+  content: z.string(),
+  isCorrect: z.boolean()
 });
 
 export type CreateMaterialInput = z.infer<typeof createMaterialSchema>;

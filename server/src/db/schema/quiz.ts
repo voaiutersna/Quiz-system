@@ -100,7 +100,7 @@ export const quizChoices = pgTable(
     content: text("content").notNull(),
 
     // ใช้ union type QuizItemType เพื่อบอกว่าเป็นข้อแบบไหน
-    type: text("type").$type<QuizItemType>().notNull(),
+    type: text("type").$type<QuizItemType>().default("choice"),
 
     // เป็นคำตอบที่ถูกไหม (ใช้ตอน grading)
     isCorrect: boolean("is_correct").notNull().default(false),

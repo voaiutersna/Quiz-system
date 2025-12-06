@@ -1,4 +1,5 @@
 import axios from "axios"
+import ChoiceCn from "../../../../../../../components/choiceform"
 const page = async ({ params }: { params: Promise<{ sectionId: string }> }) => {
     const {sectionId} = await params
     console.log(sectionId)
@@ -7,7 +8,7 @@ const page = async ({ params }: { params: Promise<{ sectionId: string }> }) => {
     // console.log(response)
     const quizItem = response.data.res.quizItems
     const section= response.data.res.section[0]
-    console.log(quizItem)
+    console.log("GET Item",quizItem)
     console.log(section)
   return (
     <>
@@ -17,6 +18,7 @@ const page = async ({ params }: { params: Promise<{ sectionId: string }> }) => {
         {quizItem.map((item:any,index:number)=>(
           <div key={index}>
             {item.content}
+            <ChoiceCn itemId={item.id}></ChoiceCn>
           </div>
         ))}
       </div>

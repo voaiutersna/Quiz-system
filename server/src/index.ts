@@ -20,7 +20,15 @@ app.use("*", secureHeaders());
 app.use(
   "*",
   cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || ["http://localhost:5173"],
+    origin: process.env.NODE_ENV === "development" 
+      ? (origin) => {
+          // อนุญาตทุก localhost ใน dev mode
+          if (origin?.startsWith("http://localhost:")) {
+            return origin;
+          }
+          return "http://localhost:3001"; // default
+        }
+      : process.env.CORS_ORIGIN?.split(",") || ["http://localhost:3001"],
     credentials: true,
   })
 );
